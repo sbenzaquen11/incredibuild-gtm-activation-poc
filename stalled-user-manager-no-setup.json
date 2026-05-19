@@ -1,0 +1,38 @@
+{
+  "event": "user_stalled",
+  "event_timestamp": "2026-05-15T09:12:00Z",
+  "user": {
+    "id": "usr_9032",
+    "first_name": "Tomer",
+    "email": "tomer.aviram@axlesystems.example",
+    "job_role": "Engineering Manager"
+  },
+  "account": {
+    "company_name": "Axle Systems",
+    "domain": "axlesystems.example",
+    "account_state": "net_new",
+    "vertical": "embedded",
+    "company_size": "800 employees"
+  },
+  "funnel": {
+    "current_stage": "MQL_T0",
+    "stall_stage": "signed_up_no_setup",
+    "signup_at": "2026-05-13T08:55:00Z",
+    "setup_completed_at": null,
+    "last_active_at": "2026-05-13T09:02:00Z",
+    "time_since_last_activity_hours": 48,
+    "session_count": 1
+  },
+  "environment": {
+    "os": null,
+    "ci_system": null,
+    "build_system": null
+  },
+  "build": {
+    "builds_attempted": 0,
+    "builds_succeeded": 0,
+    "build_time_saved_minutes": 0,
+    "last_error_type": null,
+    "last_error_message": null
+  }
+}

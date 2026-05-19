@@ -1,0 +1,38 @@
+{
+  "event": "build_failed",
+  "event_timestamp": "2026-05-15T09:12:00Z",
+  "user": {
+    "id": "usr_7715",
+    "first_name": "Noa",
+    "email": "noa.shaked@vectorcap.example",
+    "job_role": "Software Developer"
+  },
+  "account": {
+    "company_name": "Vector Capital Trading",
+    "domain": "vectorcap.example",
+    "account_state": "net_new",
+    "vertical": "financial_services",
+    "company_size": "300 employees"
+  },
+  "funnel": {
+    "current_stage": "MQL_T1",
+    "stall_stage": "build_failed",
+    "signup_at": "2026-05-14T07:30:00Z",
+    "setup_completed_at": "2026-05-14T16:10:00Z",
+    "last_active_at": "2026-05-15T04:20:00Z",
+    "time_since_last_activity_hours": 5,
+    "session_count": 6
+  },
+  "environment": {
+    "os": "Linux",
+    "ci_system": "GitHub Actions",
+    "build_system": "C++"
+  },
+  "build": {
+    "builds_attempted": 2,
+    "builds_succeeded": 0,
+    "build_time_saved_minutes": 0,
+    "last_error_type": "environment_dependency",
+    "last_error_message": "Build agent failed to resolve toolchain dependency on the Linux runner: required glibc version not found."
+  }
+}

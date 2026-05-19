@@ -1,0 +1,38 @@
+{
+  "event": "user_stalled",
+  "event_timestamp": "2026-05-15T09:12:00Z",
+  "user": {
+    "id": "usr_8841",
+    "first_name": "Dana",
+    "email": "dana.reuven@lumenforge.example",
+    "job_role": "Software Developer"
+  },
+  "account": {
+    "company_name": "Lumen Forge Studios",
+    "domain": "lumenforge.example",
+    "account_state": "net_new",
+    "vertical": "gaming_simulation",
+    "company_size": "120 employees"
+  },
+  "funnel": {
+    "current_stage": "MQL_T1",
+    "stall_stage": "setup_complete_no_build",
+    "signup_at": "2026-05-10T14:03:00Z",
+    "setup_completed_at": "2026-05-12T11:20:00Z",
+    "last_active_at": "2026-05-12T11:41:00Z",
+    "time_since_last_activity_hours": 70,
+    "session_count": 3
+  },
+  "environment": {
+    "os": "Windows",
+    "ci_system": "Jenkins",
+    "build_system": "Unreal Engine / C++"
+  },
+  "build": {
+    "builds_attempted": 0,
+    "builds_succeeded": 0,
+    "build_time_saved_minutes": 0,
+    "last_error_type": null,
+    "last_error_message": null
+  }
+}
