@@ -1,0 +1,523 @@
+{
+  "name": "Incredibuild Activation Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "05a0154e-be56-4fde-8124-f77bb7c18916",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3d2577b4-7d4f-49a1-bcb0-98c6f4b00855",
+      "name": "Webhook",
+      "webhookId": "05a0154e-be56-4fde-8124-f77bb7c18916"
+    },
+    {
+      "parameters": {
+        "select": "=user",
+        "channelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "user": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "text": "=Hi  {{ $('Webhook').item.json.body.account.account_owner }}, please note that we've identified a contact from {{ $('Webhook').item.json.body.account.company_name }}, which is an existing customer. \n\nMore information: https://hubspot.com/8024317/contacts/{{ $('Webhook').item.json.body.user.id }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        608,
+        160
+      ],
+      "id": "18db5163-4e4d-434f-af59-a517120fcfa7",
+      "name": "Send Message to CS Owner",
+      "webhookId": "153ca5dd-fe0b-45fb-9079-b2e5d32c201f"
+    },
+    {
+      "parameters": {
+        "resource": "user",
+        "operation": "getProfile",
+        "user": {
+          "__rl": true,
+          "value": "={{ $('Webhook').item.json.body.account.account_owner_email }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        400,
+        160
+      ],
+      "id": "1bd8eb03-6ce8-435a-8fd4-e7e929a53730",
+      "name": "Find Owner ID in Slack",
+      "webhookId": "dcc21890-fafc-41b6-8ebc-451110ed1293"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://clay.com/985764gsdf923jn",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "[\n  {\n    \"headers\": {\n      \"content-type\": \"application/json\"\n    },\n    \"params\": {},\n    \"query\": {},\n    \"body\": {\n      \"event\": \"user_stalled\",\n      \"event_timestamp\": \"2026-05-15T09:12:00Z\",\n      \"user\": {\n        \"id\": \"usr_8841\",\n        \"first_name\": \"Dana\",\n        \"email\": \"dana.reuven@lumenforge.example\",\n        \"job_role\": \"Software Developer\"\n      },\n      \"account\": {\n        \"company_name\": \"Lumen Forge Studios\",\n        \"domain\": \"lumenforge.example\",\n        \"account_state\": \"net_new\",\n        \"vertical\": \"gaming_simulation\",\n        \"company_size\": \"120 employees\",\n        \"account_owner\": \"Gerald Fitzgerald\",\n        \"account_owner_email\": \"gfitzgerald@incredibuild.com\"\n      },\n      \"funnel\": {\n        \"current_stage\": \"MQL_T1\",\n        \"stall_stage\": \"setup_complete_no_build\",\n        \"signup_at\": \"2026-05-10T14:03:00Z\",\n        \"setup_completed_at\": \"2026-05-12T11:20:00Z\",\n        \"last_active_at\": \"2026-05-12T11:41:00Z\",\n        \"time_since_last_activity_hours\": 70,\n        \"session_count\": 3\n      },\n      \"environment\": {\n        \"os\": \"Windows\",\n        \"ci_system\": \"Jenkins\",\n        \"build_system\": \"Unreal Engine / C++\"\n      },\n      \"build\": {\n        \"builds_attempted\": 0,\n        \"builds_succeeded\": 0,\n        \"build_time_saved_minutes\": 0,\n        \"last_error_type\": null,\n        \"last_error_message\": null\n      }\n    }\n  }\n]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        416,
+        -96
+      ],
+      "id": "6fc04a20-44ff-455c-b131-6fd2284cda53",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "contactId": {
+          "__rl": true,
+          "value": "={{ $('Webhook').item.json.body.user.id }}",
+          "mode": "id"
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        -96
+      ],
+      "id": "9e717220-fa59-4c54-892d-51463022e13c",
+      "name": "Fetch Updated Contact Data"
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        -96
+      ],
+      "id": "7e80d87f-a75a-4dd8-946a-edcafa805242",
+      "name": "Wait",
+      "webhookId": "62a21264-e080-4f49-8375-47a1783cfe3d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ea664f9b-e5cb-4c17-8f82-0e63fe87db5c",
+              "leftValue": "={{ $json.body.account.account_state }}",
+              "rightValue": "existing_customer",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "55341cb5-ee72-4514-8b58-405f854a04fe",
+      "name": "Check if (NOT) Customer"
+    },
+    {
+      "parameters": {
+        "email": "={{ $('Webhook').item.json.body.user.email }}",
+        "additionalFields": {
+          "status": ""
+        },
+        "options": {
+          "resolveData": false
+        }
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        160
+      ],
+      "id": "13ca4b1d-b592-4ce2-b9d1-b05a64412606",
+      "name": "Update Property -> Enroll to Acquisition Workflow (Customer)"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You classify a software tool user into a persona category, used both to decide\nwhether the user is a relevant target for activation messaging and to route the\nmessage that gets written.\n\nCategories:\n- hands_on: writes code or directly runs builds and CI. Software developers,\n  engineers at any level including senior, staff, and principal, build engineers,\n  DevOps, release engineers, SREs. These users do technical setup themselves.\n- decision_maker: leads or manages an engineering function and is unlikely to do\n  hands-on setup personally. Engineering managers, team leads, directors, VPs of\n  Engineering or R&D, CTOs, heads of platform or developer experience.\n- other: not a relevant target for activation messaging. The role has no clear\n  hands-on or engineering-leadership function. Procurement, finance, marketing,\n  sales, recruiters, students, or any role that does not fit the two above. When\n  the persona is other, the flow will not generate a message.\n\nRules:\n- Decide from the job role text.\n- If the role is clearly an engineering role but the seniority is ambiguous,\n  choose hands_on. Most users at this stage do the setup themselves.\n- Choose other only when the role is clearly outside engineering. Do not use it\n  as a catch-all for unusual engineering titles.\n- Output strict JSON only. No preamble, no markdown, no code fences.\n\nOutput schema:\n{\"persona\": \"hands_on | decision_maker | other\", \"reasoning\": \"one short sentence\"}\nInput prompt (template)\nJob role: {{ $('Webhook').item.json.body.user.job_role }}\n\nClassify the persona as JSON.\nOutput examples\n{\"persona\": \"decision_maker\", \"reasoning\": \"An Engineering Manager leads a team and typically delegates hands-on setup.\"}\n{\"persona\": \"other\", \"reasoning\": \"A Procurement Specialist has no engineering function and is not an activation target.\"}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        -96
+      ],
+      "id": "ba771e64-6221-4984-b52c-7fe522d1103c",
+      "name": "AI Persona Classifier",
+      "credentials": {
+        "anthropicApi": {
+          "id": "wwHOq0jLhsu78bWa",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=SYSTEM:\nYou write the first email of an activation sequence for Incredibuild, a developer\ntool that accelerates software build times through distributed caching and\ncomputation.\n\nYou are given the company's full messaging library and one stalled user's context.\nYour job has two parts:\n1. Read through the library and select the single base message that best fits\n   this user's situation.\n2. Personalize that base message into a specific first email.\n\nSelecting the base message:\n- This user is in the Activation stage. Select from the Activation messages.\n- Match on the stall stage and the persona. Each library entry states what it\n  applies to.\n- If more than one entry could fit, choose the most specific match.\n- An entry whose persona is \"any\" fits any persona for that stall stage.\n- If no entry genuinely fits, do not force one. Return generate set to false.\n\nWriting the email:\n- You do not invent the angle or the offer. The angle comes from the base message\n  you selected. You adapt its wording to this user.\n- Personalize to the user's first name, persona, stall reason, vertical, and\n  environment.\n- Match the persona. A hands_on user gets concrete technical help. A decision_maker\n  gets an offer to route the setup to their team and is never asked to do hands-on\n  technical work themselves.\n\nHard rules:\n- If the stall is a failed build, the email is troubleshooting. Acknowledge the\n  failure, point to help for their specific error, and never invite them to run\n  a build.\n- Never invent product features, metrics, customers, or facts not in the input\n  or the library.\n- Keep the body under 90 words. No marketing hype. Write like a helpful peer.\n- Output strict JSON only. No preamble, no markdown, no code fences.\n\nRelevance check. Return generate set to false, with no email, if any of these\nare true:\n- No library entry fits this user's situation.\n- The context is too thin to write something specific and useful.\n- The user is not a credible activation target.\nA skipped message is better than a generic one.\n\nOutput schema:\n{\n  \"generate\": true or false,\n  \"subject\": \"string, omit if generate is false\",\n  \"body\": \"string, omit if generate is false\",\n  \"base_message_id\": \"the id of the library entry you selected, omit if generate is false\",\n  \"reasoning\": \"one sentence on which entry you chose and why, or why you skipped\"\n}\n\nMessaging library:\n{{ $json.content }}\n\nINPUT:\nUser context:\n- Name: {{ $('Webhook').item.json.body.user.first_name }}\n- Persona: \n- Role: {{ $('Webhook').item.json.body.user.job_role }}\n- Company: {{ $('Webhook').item.json.body.account.company_name }},{{ $('Webhook').item.json.body.account.account_state }} )\n- Stall stage: {{ $('Webhook').item.json.body.funnel.stall_stage }}\n- Environment: {{ $('Webhook').item.json.body.environment.os }}, {{ $('Webhook').item.json.body.environment.ci_system }}, {{ $('Webhook').item.json.body.environment.build_system }}\n- Error detail, if any: {{ $('Webhook').item.json.body.build.last_error_message }}\n\nSelect the best-fit base message from the library, then write the first\nactivation email as JSON."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        -112
+      ],
+      "id": "d78055bb-a5e6-4e11-adba-f10e7095b220",
+      "name": "Message a model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "wwHOq0jLhsu78bWa",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1OlGhAao6gsugOSt4b_eUKZJxomztA37cOrsJntbyeLU/edit?tab=t.0"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        -112
+      ],
+      "id": "be0ef6ca-d7f7-4eaf-9d55-bb35b2bce532",
+      "name": "Get a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "QBMu2t3v7DwnQXDK",
+          "name": "Google Docs OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4da6fc54-5877-4004-87b3-99a1da996f1c",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1376,
+        -96
+      ],
+      "id": "b2cbcc86-318b-416c-8b4c-f98e18c1af78",
+      "name": "If Persona is Relevant"
+    },
+    {
+      "parameters": {
+        "resource": "contactList",
+        "email": "={{ $('Webhook').item.json.body.user.email }}",
+        "listId": 0
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        1664,
+        80
+      ],
+      "id": "7610deea-fc36-433d-ad8b-91f70074fedd",
+      "name": "Add a contact to Irrelevant List"
+    },
+    {
+      "parameters": {
+        "email": "={{ $('Webhook').item.json.body.user.email }}",
+        "additionalFields": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        2160,
+        -112
+      ],
+      "id": "e52a1f73-59f1-45c5-b47c-9be85113e59a",
+      "name": "Update Email Text and Enroll in Workflow"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "content-type": "application/json"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "user_stalled",
+            "event_timestamp": "2026-05-15T09:12:00Z",
+            "user": {
+              "id": "usr_8841",
+              "first_name": "Dana",
+              "email": "dana.reuven@lumenforge.example",
+              "job_role": "Software Developer"
+            },
+            "account": {
+              "company_name": "Lumen Forge Studios",
+              "domain": "lumenforge.example",
+              "account_state": "net_new",
+              "vertical": "gaming_simulation",
+              "company_size": "120 employees",
+              "account_owner": "Gerald Fitzgerald",
+              "account_owner_email": "gfitzgerald@incredibuild.com"
+            },
+            "funnel": {
+              "current_stage": "MQL_T1",
+              "stall_stage": "setup_complete_no_build",
+              "signup_at": "2026-05-10T14:03:00Z",
+              "setup_completed_at": "2026-05-12T11:20:00Z",
+              "last_active_at": "2026-05-12T11:41:00Z",
+              "time_since_last_activity_hours": 70,
+              "session_count": 3
+            },
+            "environment": {
+              "os": "Windows",
+              "ci_system": "Jenkins",
+              "build_system": "Unreal Engine / C++"
+            },
+            "build": {
+              "builds_attempted": 0,
+              "builds_succeeded": 0,
+              "build_time_saved_minutes": 0,
+              "last_error_type": null,
+              "last_error_message": null
+            }
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Check if (NOT) Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Owner ID in Slack": {
+      "main": [
+        [
+          {
+            "node": "Send Message to CS Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Updated Contact Data": {
+      "main": [
+        [
+          {
+            "node": "AI Persona Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Fetch Updated Contact Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if (NOT) Customer": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Find Owner ID in Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Message to CS Owner": {
+      "main": [
+        [
+          {
+            "node": "Update Property -> Enroll to Acquisition Workflow (Customer)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Persona Classifier": {
+      "main": [
+        [
+          {
+            "node": "If Persona is Relevant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Persona is Relevant": {
+      "main": [
+        [
+          {
+            "node": "Get a document",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add a contact to Irrelevant List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Update Email Text and Enroll in Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9acbbc5d-30f4-461e-a5b1-f1e4c2a55d3e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f9935b05f6fe255f7eea8e5c2dfed9201ef760dd700056a67d4d45e513738119"
+  },
+  "id": "VNPVCBt8GUKCYC6M",
+  "tags": []
+}
